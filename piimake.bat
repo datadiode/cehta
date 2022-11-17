@@ -89,6 +89,10 @@ Sub CreateAddon_OnClick
 	Dim i, frame, line, path, file
 	CreateFolder(AddOnFolder)
 	If CreateFolder(AddOnFolder & "\" & AddOnName) Then DeleteAddon.disabled = False
+	path = AddOnFolder & "\" & AddOnName & "\Common"
+	If CreateFolder(path) Then
+		fso.CopyFile home & "\show-vbs-info.bat", path & "\"
+	End If
 	For i = 0 To document.frames.length - 1
 		Set frame = document.frames(i)
 		path = AddOnFolder & "\" & AddOnName & "\" & frame.frameElement.name
@@ -104,6 +108,7 @@ Sub CreateAddon_OnClick
 			ElseIf Len(line) > 21 And InStr(line, "#TARGET_os_version_") = Len(line) - 21 Then
 				file.WriteLine FormatNumber(Right(frame.frameElement.name, 3) / 100, 2) & " " & Right(line, 22)
 			ElseIf InStr(1, line, "; file ", vbTextCompare) = 1 Then
+				file.WriteLine "\Common\show-vbs-info.bat > \flash\AddOn\ #NO"
 				file.WriteLine "\" & frame.frameElement.name & "\cehta.exe > \flash\AddOn\ #NO"
 			' ElseIf InStr(1, line, "; registry ", vbTextCompare) = 1 Then
 			' ElseIf InStr(1, line, "; uninstall ", vbTextCompare) = 1 Then
