@@ -1,0 +1,28 @@
+#include "windows.h"
+#include "gen-versioninfo.h"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION GEN_VER_DIGITAL_VERSION
+PRODUCTVERSION GEN_VER_DIGITAL_VERSION
+
+BEGIN
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "040904E4"
+		BEGIN
+			VALUE "CompanyName",        "datadiode"
+			VALUE "FileDescription",    "HTML Application host for Windows CE"
+			VALUE "FileVersion",        GEN_VER_VERSION_STRING
+			VALUE "InternalName",       "cehta.exe"
+			VALUE "LegalCopyright",	    "ZPL-2.1"
+			VALUE "OriginalFilename",   "cehta.exe"
+			VALUE "ProductName",        "CEhta"
+			VALUE "ProductVersion",     GEN_VER_VERSION_STRING
+		END
+	END
+
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x409, 1252
+	END
+END

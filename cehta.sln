@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mshta4ce", "cehta.vcxproj", "{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Compact2013_SDK_86Duino_80B = Debug|Compact2013_SDK_86Duino_80B
+		Debug|WEC2013 Beaglebone SDK = Debug|WEC2013 Beaglebone SDK
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Compact2013_SDK_86Duino_80B = Release|Compact2013_SDK_86Duino_80B
+		Release|WEC2013 Beaglebone SDK = Release|WEC2013 Beaglebone SDK
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Debug|Compact2013_SDK_86Duino_80B.ActiveCfg = Debug|Compact2013_SDK_86Duino_80B
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Debug|Compact2013_SDK_86Duino_80B.Build.0 = Debug|Compact2013_SDK_86Duino_80B
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Debug|WEC2013 Beaglebone SDK.ActiveCfg = Debug|WEC2013 Beaglebone SDK
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Debug|WEC2013 Beaglebone SDK.Build.0 = Debug|WEC2013 Beaglebone SDK
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Debug|Win32.Build.0 = Debug|Win32
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Debug|x64.ActiveCfg = Debug|x64
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Debug|x64.Build.0 = Debug|x64
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Release|Compact2013_SDK_86Duino_80B.ActiveCfg = Release|Compact2013_SDK_86Duino_80B
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Release|Compact2013_SDK_86Duino_80B.Build.0 = Release|Compact2013_SDK_86Duino_80B
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Release|WEC2013 Beaglebone SDK.ActiveCfg = Release|WEC2013 Beaglebone SDK
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Release|WEC2013 Beaglebone SDK.Build.0 = Release|WEC2013 Beaglebone SDK
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Release|Win32.ActiveCfg = Release|Win32
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Release|Win32.Build.0 = Release|Win32
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Release|x64.ActiveCfg = Release|x64
+		{E14DF0EF-1A28-4CAF-83D1-ADF0809ADBEC}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
