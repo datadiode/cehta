@@ -1,7 +1,7 @@
 # HTML Application host for Windows CE (cehta)
 [![StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
 
-Example of CEhta compatible .hta code wrapped into a .bat file: 
+### Example of CEhta compatible .hta code wrapped into a .bat file 
 ```html
 <!-- rem>
 ::^^ The XML comment brackets prevent the .bat stub from showing up on the page
@@ -48,3 +48,5 @@ End Sub
 </html>
 
 ```
+### How it looks like in Virtual CEPC
+![cehta](https://user-images.githubusercontent.com/10423465/202555698-85f0f9cb-13fb-40dc-ad1f-34bf70d60482.png)
