@@ -38,7 +38,7 @@ static struct mshtml {
 	GetProcAddressA(mshtml.h, "ShowHTMLDialogEx"),
 };
 
-static HRESULT CreateLoaderScript(LPCWSTR path, LPWSTR script, DWORD limit)
+static HRESULT CreateLoaderScript(LPWSTR path, LPWSTR script, DWORD limit)
 {
 	LPCWSTR f = L"javascript:"
 				L"xml=new ActiveXObject('MSXML.DOMDocument');"
@@ -48,6 +48,7 @@ static HRESULT CreateLoaderScript(LPCWSTR path, LPWSTR script, DWORD limit)
 				L"document.close()";
 	LPWSTR d = script;
 	LPWSTR const e = script + limit;
+	LPWSTR s = NULL;
 	for (WCHAR c; (d < e) && ((c = *d = *f++) != '\0'); )
 	{
 		if (c != '?')
@@ -55,9 +56,10 @@ static HRESULT CreateLoaderScript(LPCWSTR path, LPWSTR script, DWORD limit)
 			++d;
 			continue;
 		}
-		LPCWSTR s = path;
-		for (WCHAR c; (d < e) && (c = *s++) != '\0' && (c != '?'); *d++ = c)
+		s = path;
+		for (WCHAR c; (d < e) && (c = *s) != '\0' && (c != '?'); *d++ = c)
 		{
+			++s;
 			switch (c)
 			{
 			case '\b': c = 'b'; break;
@@ -75,7 +77,18 @@ static HRESULT CreateLoaderScript(LPCWSTR path, LPWSTR script, DWORD limit)
 				break;
 		}
 	}
-	return (d < e) && (*d == '\0') ? S_OK : HRESULT_FROM_WIN32(ERROR_BUFFER_OVERFLOW);
+	if (d >= e)
+		return HRESULT_FROM_WIN32(ERROR_BUFFER_OVERFLOW);
+	if (s != NULL)
+	{
+		WCHAR c = *s;
+		*s = '\0';
+		DWORD attr = GetFileAttributesW(path);
+		*s = c;
+		if (attr & FILE_ATTRIBUTE_DIRECTORY) // path is invalid or points to a folder
+			return HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND);
+	}
+	return S_OK;
 }
 
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPWSTR url, int)
