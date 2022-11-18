@@ -47,6 +47,20 @@ span
 	bottom: 5px;
 }
 </style>
+
+<comment id='register'>REGEDIT4
+
+[HKEY_CLASSES_ROOT\.hta]
+@="htafile"
+[HKEY_CLASSES_ROOT\htafile]
+@="HTA File"
+[HKEY_CLASSES_ROOT\htafile\DefaultIcon]
+@="\flash\AddOn\cehta.exe,-1"
+[HKEY_CLASSES_ROOT\htafile\Shell\Open\Command]
+@="\flash\AddOn\cehta.exe %1"
+
+</comment>
+
 <script type="text/vbs">
 Option Explicit
 
@@ -88,10 +102,13 @@ End Function
 Sub CreateAddon_OnClick
 	Dim i, frame, line, path, file
 	CreateFolder(AddOnFolder)
-	If CreateFolder(AddOnFolder & "\" & AddOnName) Then DeleteAddon.disabled = False
-	path = AddOnFolder & "\" & AddOnName & "\Common"
-	If CreateFolder(path) Then
-		fso.CopyFile home & "\show-vbs-info.bat", path & "\"
+	If CreateFolder(AddOnFolder & "\" & AddOnName) Then
+		DeleteAddon.disabled = False
+		path = AddOnFolder & "\" & AddOnName & "\Common"
+		If CreateFolder(path) Then
+			fso.CreateTextFile(path & "\cehta.reg").Write(register.text)
+			fso.CopyFile home & "\show-vbs-info.bat", path & "\"
+		End If
 	End If
 	For i = 0 To document.frames.length - 1
 		Set frame = document.frames(i)
@@ -109,8 +126,10 @@ Sub CreateAddon_OnClick
 				file.WriteLine FormatNumber(Right(frame.frameElement.name, 3) / 100, 2) & " " & Right(line, 22)
 			ElseIf InStr(1, line, "; file ", vbTextCompare) = 1 Then
 				file.WriteLine "\Common\show-vbs-info.bat > \flash\AddOn\ #NO"
+				file.WriteLine "\Common\show-vbs-info.bat > \flash\AddOn\show-vbs-info.hta #NO"
 				file.WriteLine "\" & frame.frameElement.name & "\cehta.exe > \flash\AddOn\ #NO"
-			' ElseIf InStr(1, line, "; registry ", vbTextCompare) = 1 Then
+			ElseIf InStr(1, line, "; registry ", vbTextCompare) = 1 Then
+				file.WriteLine "\Common\cehta.reg #REGEDIT"
 			' ElseIf InStr(1, line, "; uninstall ", vbTextCompare) = 1 Then
 			ElseIf Len(line) <> 0 And InStr(line, "\") = 0 And InStr(line, ";") = 0 Then
 				file.WriteLine line
