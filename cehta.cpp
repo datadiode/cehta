@@ -1,6 +1,6 @@
 // HTML Application host for Windows CE
 // Copyright (c) datadiode
-// SPDX-License-Identifier: ZPL-2.1
+// SPDX-License-Identifier: GPL-2.0-or-later
 #include <windows.h>
 #include <wininet.h>
 #include <oleauto.h>

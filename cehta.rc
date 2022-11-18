@@ -1,6 +1,8 @@
 #include "windows.h"
 #include "gen-versioninfo.h"
 
+1 ICON cehta.ico
+
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION GEN_VER_DIGITAL_VERSION
 PRODUCTVERSION GEN_VER_DIGITAL_VERSION
@@ -14,7 +16,7 @@ BEGIN
 			VALUE "FileDescription",    "HTML Application host for Windows CE"
 			VALUE "FileVersion",        GEN_VER_VERSION_STRING
 			VALUE "InternalName",       "cehta.exe"
-			VALUE "LegalCopyright",	    "ZPL-2.1"
+			VALUE "LegalCopyright",     "GPL-2.0-or-later"
 			VALUE "OriginalFilename",   "cehta.exe"
 			VALUE "ProductName",        "CEhta"
 			VALUE "ProductVersion",     GEN_VER_VERSION_STRING
