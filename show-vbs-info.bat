@@ -25,6 +25,7 @@ Option Explicit
 
 ' Avoid Window_OnLoad as it fires twice when hosted in CEhta
 Sub Document_OnReadyStateChange
+	document.focus
 	Dim row, text
 	For Each row In report.rows
 		text = row.cells(0).innerText
