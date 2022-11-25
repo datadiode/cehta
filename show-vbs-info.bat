@@ -1,17 +1,16 @@
-<!-- rem>
-::^^ The XML comment brackets prevent the .bat stub from showing up on the page
+<!DOCTYPE rem|
 @echo off
 if %os%==%os:/=/% goto desktop
-start cehta.exe %0
+start cehta.exe "%0"
 goto :eof
 :desktop
 start "%~n0" "%SystemRoot%\system32\mshta.exe" "%~f0"
 goto :eof
--->
+>
+<?cehta-options dialogWidth=26; dialogHeight=12; resizable=yes?>
 <html>
-<![CDATA[
-<!-- ^^^ The CDATA tag helps ensure XML conformance for CEhta's happiness -->
 <head>
+<hta:application id='dialogArguments'/>
 <style>
 table
 {
@@ -23,9 +22,8 @@ table
 <script type='text/vbs'>
 Option Explicit
 
-' Avoid Window_OnLoad as it fires twice when hosted in CEhta
-Sub Document_OnReadyStateChange
-	document.focus
+Sub Window_OnLoad
+	document.title = dialogArguments.commandLine & " (" & document.compatMode & ")"
 	Dim row, text
 	For Each row In report.rows
 		text = row.cells(0).innerText
@@ -54,6 +52,4 @@ End Sub
 <tr><td>VBScript.RegExp</td><td>OK</td></tr>
 <tr><td>SRELL.RegExp</td><td>OK</td></tr>
 </table>
-<comment>]]>
-<!-- ^^^ The <comment> tag prevents the ]]> from showing up on the page -->
 </html>
