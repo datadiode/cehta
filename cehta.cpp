@@ -1,6 +1,19 @@
 // HTML Application host for Windows CE
 // Copyright (c) datadiode
 // SPDX-License-Identifier: GPL-2.0-or-later
+
+#ifdef _WIN32_WCE
+#define SB_SIMPLEID  0x00ff
+#if (_WIN32_WCE == 0x800) && defined(_X86_)
+// To compensate for Compact2013_SDK_86Duino_80B's lack of CE_MODULES_COMMCTRL:
+// - Use Header from <../../../../wce600/Beckhoff_HMI_600/Include/X86/commctrl.h>
+// - Use ImpLib from $(SdkRootPath)..\..\..\wce600\Beckhoff_HMI_600\Lib\x86\commctrl.lib
+#pragma include_alias(<commctrl.h>,<../../../../wce600/Beckhoff_HMI_600/Include/X86/commctrl.h>)
+#endif
+#else
+#define GetProcAddressA GetProcAddress
+#endif
+
 #include <windows.h>
 #include <wininet.h>
 #include <oleauto.h>
@@ -8,10 +21,7 @@
 #include <tchar.h>
 #include <mshtml.h>
 #include <mshtmhst.h>
-
-#ifndef _WIN32_WCE
-#define GetProcAddressA GetProcAddress
-#endif
+#include <commctrl.h>
 
 #define SafeInvoke(p) (p) == NULL ? E_POINTER : (p)
 
@@ -53,9 +63,11 @@ private:
 	LPWSTR payload;	// pointer to apparent beginning of html payload
 	BSTR path;
 
+	HWND status;
+
 	Loader &operator=(Loader const &);
 public:
-	Loader(LPCWSTR cl) : cmdline(cl), content(NULL), payload(NULL)
+	Loader(LPCWSTR cl) : cmdline(cl), content(NULL), payload(NULL), status(NULL)
 	{
 		UINT len = static_cast<UINT>(wcslen(cl));
 		if (LPCWSTR end = *cl == L'"' ? wmemchr(++cl, L'"', len) : wcspbrk(cl, L" \t\r\n"))
@@ -185,6 +197,13 @@ public:
 				hwnd = hwndParent;
 			SetWindowText(hwnd, path);
 			SetForegroundWindow(hwnd);
+			// Look for status bar, and if it exists, set it to simple mode
+			WCHAR name[_countof(STATUSCLASSNAME) + 1];
+			status = GetWindow(hwnd, GW_CHILD);
+			while (status && _wcsicmp(GetClassName(status, name, _countof(name)) ? name : L"", STATUSCLASSNAME) != 0)
+				status = GetWindow(status, GW_HWNDNEXT);
+			if (status)
+				SendMessage(status, SB_SIMPLE, 1, 0);
 		}
 		SafeInvoke(pWindow)->put_name(path);
 
@@ -219,24 +238,51 @@ public:
 		// "commandLine" as an alias name for this object's default property
 		if ((rgNames == NULL) || (rgDispId == NULL) || (cNames != 1))
 			return E_INVALIDARG;
-		if (rgNames[0] == NULL || _wcsicmp(rgNames[0], L"commandLine") != 0)
+		if (rgNames[0] == NULL)
 			return DISP_E_UNKNOWNNAME;
-		rgDispId[0] = 0;
+		else if (_wcsicmp(rgNames[0], L"commandLine") == 0)
+			rgDispId[0] = 0;
+		else if (_wcsicmp(rgNames[0], L"status") == 0)
+			rgDispId[0] = 1;
+		else return DISP_E_UNKNOWNNAME;
 		return S_OK;
 	}
-	STDMETHOD(Invoke)(DISPID dispid, REFIID, LCID, WORD wFlags, DISPPARAMS *, VARIANT *pVarResult, EXCEPINFO *, UINT *)
+	STDMETHOD(Invoke)(DISPID dispid, REFIID, LCID, WORD wFlags, DISPPARAMS *pDispParams, VARIANT *pVarResult, EXCEPINFO *, UINT *)
 	{
 		// Expose the URL as default property to allow scripts to extract parameters
-		if ((dispid != 0) || ((wFlags & DISPATCH_PROPERTYGET) == 0))
-			return DISP_E_MEMBERNOTFOUND;
-		V_VT(pVarResult) = VT_BSTR;
-		V_BSTR(pVarResult) = SysAllocString(cmdline);
-		return S_OK;
+		switch (dispid)
+		{
+		case 0:
+			if (wFlags & DISPATCH_PROPERTYGET)
+			{
+				V_VT(pVarResult) = VT_BSTR;
+				V_BSTR(pVarResult) = SysAllocString(cmdline);
+				return S_OK;
+			}
+			break;
+		case 1:
+			if (wFlags & DISPATCH_PROPERTYPUT)
+			{
+				VARIANT var;
+				VariantInit(&var);
+				if (SUCCEEDED(VariantChangeType(&var, &pDispParams->rgvarg[0], 0, VT_BSTR)))
+				{
+					SendMessage(status, SB_SETTEXT, SB_SIMPLEID, reinterpret_cast<LPARAM>(V_BSTR(&var)));
+					UpdateWindow(status);
+				}
+				VariantClear(&var);
+				return S_OK;
+			}
+			break;
+		}
+		return DISP_E_MEMBERNOTFOUND;
 	}
 };
 
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdline, int)
 {
+	INITCOMMONCONTROLSEX initcc = { sizeof initcc, ICC_WIN95_CLASSES };
+	InitCommonControlsEx(&initcc);
 	HRESULT hr;
 	if (SUCCEEDED(hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)))
 	{
@@ -255,9 +301,9 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPWSTR cmdline, int)
 				BSTR options = loader.QueryProcessingInstruction(L"<?cehta-options");
 				if (options == NULL)
 					options = SysAllocString(L"dialogWidth=80;dialogHeight=50;resizable=yes");
-				hr = SafeInvoke(*mshtml.ShowHTMLDialogEx)(NULL, pMoniker, HTMLDLG_MODAL | HTMLDLG_VERIFY, &in, options, &out);
-				if (SUCCEEDED(hr = VariantChangeType(&out, &out, 0, VT_I4)))
-					hr = V_I4(&out);
+				if (SUCCEEDED(hr = SafeInvoke(*mshtml.ShowHTMLDialogEx)(NULL, pMoniker, HTMLDLG_MODAL | HTMLDLG_VERIFY, &in, options, &out)))
+					if (SUCCEEDED(hr = VariantChangeType(&out, &out, 0, VT_I4)))
+						hr = V_I4(&out);
 				VariantClear(&in);
 				VariantClear(&out);
 				SysFreeString(options);

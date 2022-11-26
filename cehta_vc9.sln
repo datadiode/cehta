@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cehta_vc9", "cehta_vc9.vcproj", "{C056B1DE-1B1D-49A6-BBDF-7FBF7A8FFD4B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cehta", "cehta_vc9.vcproj", "{C056B1DE-1B1D-49A6-BBDF-7FBF7A8FFD4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

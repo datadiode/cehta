@@ -7,7 +7,7 @@ goto :eof
 start "%~n0" "%SystemRoot%\system32\mshta.exe" "%~f0"
 goto :eof
 >
-<?cehta-options dialogWidth=26; dialogHeight=12; resizable=yes?>
+<?cehta-options dialogWidth=26; dialogHeight=12; resizable=yes; status=yes?>
 <html>
 <head>
 <hta:application id='dialogArguments'/>
@@ -23,7 +23,7 @@ table
 Option Explicit
 
 Sub Window_OnLoad
-	document.title = dialogArguments.commandLine & " (" & document.compatMode & ")"
+	dialogArguments.status = dialogArguments.commandLine & " (" & document.compatMode & ")"
 	Dim row, text
 	For Each row In report.rows
 		text = row.cells(0).innerText
@@ -45,7 +45,7 @@ End Sub
 </script>
 </head>
 <table id='report' border='1' cellpadding='5'>
-<tr><td>ScriptEngine</td><td id="tdScriptEngine"></td></tr>
+<tr><td>ScriptEngine</td><td></td></tr>
 <tr><td>ScriptEngineMajorVersion</td><td></td></tr>
 <tr><td>ScriptEngineMinorVersion</td><td></td></tr>
 <tr><td>ScriptEngineBuildVersion</td><td></td></tr>
