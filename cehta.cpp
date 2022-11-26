@@ -52,6 +52,8 @@ private:
 	BSTR content;	// pointer to beginning of file content
 	LPWSTR payload;	// pointer to apparent beginning of html payload
 	BSTR path;
+
+	Loader &operator=(Loader const &);
 public:
 	Loader(LPCWSTR cl) : cmdline(cl), content(NULL), payload(NULL)
 	{
@@ -169,8 +171,10 @@ public:
 		SafeInvoke(pSite)->GetElement(&pElement);
 		IDispatch *pDispatch = NULL;
 		SafeInvoke(pElement)->get_document(&pDispatch);
-		IHTMLDocument2 *pDocument;
+		IHTMLDocument2 *pDocument = NULL;
 		SafeInvoke(pDispatch)->QueryInterface(&pDocument);
+		IHTMLWindow2 *pWindow = NULL;
+		SafeInvoke(pDocument)->get_parentWindow(&pWindow);
 		IOleWindow *pOleWindow = NULL;
 		SafeInvoke(pDispatch)->QueryInterface(&pOleWindow);
 
@@ -182,6 +186,7 @@ public:
 			SetWindowText(hwnd, path);
 			SetForegroundWindow(hwnd);
 		}
+		SafeInvoke(pWindow)->put_name(path);
 
 		if (SAFEARRAY *const psa = SafeArrayCreateVector(VT_VARIANT, 0, 1))
 		{
@@ -189,12 +194,12 @@ public:
 			V_VT(pvar) = VT_BSTR;
 			V_BSTR(pvar) = content;
 			SafeInvoke(pDocument)->write(psa);
+			SafeInvoke(pDocument)->close();
 			SafeArrayDestroy(psa);
 		}
 
-		SafeInvoke(pDocument)->close();
-
 		SafeInvoke(pOleWindow)->Release();
+		SafeInvoke(pWindow)->Release();
 		SafeInvoke(pDocument)->Release();
 		SafeInvoke(pDispatch)->Release();
 		SafeInvoke(pElement)->Release();
@@ -214,7 +219,7 @@ public:
 		// "commandLine" as an alias name for this object's default property
 		if ((rgNames == NULL) || (rgDispId == NULL) || (cNames != 1))
 			return E_INVALIDARG;
-		if (rgNames[0] == NULL || wcsicmp(rgNames[0], L"commandLine") != 0)
+		if (rgNames[0] == NULL || _wcsicmp(rgNames[0], L"commandLine") != 0)
 			return DISP_E_UNKNOWNNAME;
 		rgDispId[0] = 0;
 		return S_OK;
