@@ -3,7 +3,12 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifdef _WIN32_WCE
-#define SB_SIMPLEID  0x00ff
+#define SB_SIMPLEID 0x00ff
+#if (_WIN32_WCE < 0x600)
+// trivialized from ChakraCore's CommonPal.h:
+#define _countof(_Array) (sizeof(_Array) / sizeof(_Array[0]))
+#pragma warning(disable: 4201) // nonstandard extension used : nameless struct/union
+#endif
 #if (_WIN32_WCE == 0x800) && defined(_X86_)
 // To compensate for Compact2013_SDK_86Duino_80B's lack of CE_MODULES_COMMCTRL:
 // - Use Header from <../../../../wce600/Beckhoff_HMI_600/Include/X86/commctrl.h>
