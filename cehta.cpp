@@ -227,7 +227,7 @@ public:
 		payload = content = NULL;
 
 		*ppBehavior = NULL;
-		return S_OK;
+		return E_INVALIDARG; // S_OK leads to crash upon close on CE6
 	}
 	// IDispatch
 	STDMETHOD(GetTypeInfoCount)(UINT *) { return E_NOTIMPL; }

@@ -7,10 +7,10 @@ goto :eof
 start "%~n0" "%SystemRoot%\system32\mshta.exe" "%~f0"
 goto :eof
 >
-<?cehta-options dialogWidth=26; dialogHeight=12; resizable=yes; status=yes?>
+<?cehta-options dialogWidth=28; dialogHeight=15; resizable=yes; status=yes?>
 <html>
 <head>
-<hta:application id='dialogArguments'/>
+<hta:application id='dialogArguments' status='unsupported'/>
 <style>
 table
 {
